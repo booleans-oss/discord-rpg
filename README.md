@@ -83,4 +83,4 @@ Require mysql database
 
 -----------
 ## Development
-see [CONTRIBUTING.md](https://github.com/SUPRAZY-DEV/discord-rpg/CONTRIBUTING.md)
+see [CONTRIBUTING.md](CONTRIBUTING.md)
