@@ -16,10 +16,10 @@
 ## IDEA 🛠
 
 **Activity Timing**
-Fishing - 3min
-Hunt - 1min
-Adventure - 1h
-Miniboss - 6h
+- Fishing - 3min
+- Hunt - 1min
+- Adventure - 1h
+- Miniboss - 6h
 
 **Choose class**
 - Choose the class
