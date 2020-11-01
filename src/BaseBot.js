@@ -15,6 +15,7 @@ const db = createConnection({
     database: "rpg"
 });
 const query = util.promisify(db.query).bind(db);
+
 class Bot extends Client {
     constructor(options) {
         super(options);

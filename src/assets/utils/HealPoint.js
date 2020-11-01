@@ -34,7 +34,7 @@ module.exports = class HealPoint {
         if (req[0].class === "Combattant") {
             await db.query(`UPDATE hp SET HP = "150" WHERE ${id}`)
         } else {
-            return;
+            return
         }
     }
 }

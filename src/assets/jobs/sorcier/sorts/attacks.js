@@ -28,8 +28,7 @@ module.exports = class Attaque extends Sortileges{
         let victimeHealth = (await query(`SELECT HP FROM hp WHERE ID = ${victime}`))[0].HP;
         if(parseInt(victimeHealth) - parseInt(this.damage) <= 0) {
             // dead boy
-            
-            // Système de mort
+            // Système de mort SOON
             await query (`UPDATE hp SET HP = '0' WHERE ID = '${victime}'`)
         }
         else {

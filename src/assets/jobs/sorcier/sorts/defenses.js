@@ -25,6 +25,7 @@ module.exports = class Defense extends Sortileges{
      */  
     async lancement(id) {
         let idHealth = (await query(`SELECT HP FROM hp WHERE ID = ${id}`))[0].HP;
+        
         await query (`UPDATE hp SET HP = '${parseInt(idHealth) + parseInt(this.protection)}' WHERE ID = '${id}'`)
     }
 }

@@ -22,21 +22,14 @@ module.exports = class RegisterCommand extends BaseCommand {
         if(message.channel.type !== "dm") return message.channel.send("MP le bot en lui disant `.register`")
         let returnLogin = new MessageEmbed().setColor("10FE01").setDescription(`Vous avez déjà un profil enregistrée. Fait .restart pour changer de classe`)
         let timeout = new MessageEmbed().setColor("FD0303").setDescription(`Vous avez pris trop de temps à répondre à la question`)
-        /*
-        combattant, sorcier, villageois) 
-        - Sous classe villageois (forgerons, voyante, agriculteur, vendeur
-        */
         let questionEmbed = new MessageEmbed().setColor("10FE01").setDescription(`Choississez une classes entre\n \`\`\`\n- Combattant\n- Sorcier\n- Villageois\`\`\``)
         let sousclasses = new MessageEmbed().setColor("10FE01").setDescription(`Choississez une sous-classes entre\n\`\`\`\n- Forgerons\n- Voyante\n- Agriculteur\n- Vendeur\`\`\``)
         let noclass = new MessageEmbed().setColor("FD0303").setDescription(`Vous avez pas donner une classe, ou alors vous l'avez mal écrit. Recommencez !`)
         let req = await db.query(`SELECT * FROM user WHERE userID = ${message.author.id}`)
         if (req.length < 1) {
-            // await db.query(`INSERT user (userID, class, lvl, xp) VALUES ('${message.author.id}', 'NULL', '0', '0')`)
-            // message.author.send(`Fait .register pour créer ton profil`)
             return message.author.send(returnLogin)
         }
         
-        // let object = {items: ["sword", "shield", "armor", "rod", "tunic", "sorcerer hat"]}
         let filter = (user => !user.bot)
         try {
             await message.author.send(questionEmbed)

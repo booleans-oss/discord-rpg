@@ -21,7 +21,6 @@ module.exports = class MessageEvent extends EventBase {
         
         let req = await db.query(`SELECT * FROM user WHERE userID = ${message.author.id}`)
         if(req.length == 1) {
-            console.log("message")
             new HealPoint().resetLife(message.author.id);
         }
 

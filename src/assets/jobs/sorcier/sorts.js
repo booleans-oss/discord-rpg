@@ -9,6 +9,6 @@ module.exports = class Sortileges {
 
 
 
-
+// Test calling function
 // let bombarda = new Sortileges(args[0]);
 // bomarda.calling() => bombarda

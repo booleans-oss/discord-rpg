@@ -1,3 +1,4 @@
+
 module.exports = class BaseCommand {
     constructor(name, category, aliases) {
         this.name = name;
