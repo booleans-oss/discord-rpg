@@ -1,3 +1,4 @@
+require('./src/error/ErrorHandling')
 const Server = require("./src/BaseBot");
 const bot = new Server({ partials: ['MESSAGE', 'REACTION']});
 
