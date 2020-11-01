@@ -10,8 +10,8 @@ const db = mysql.createConnection({
     password: "",
     database: "rpg"
 });
-const weapons = require('../assets/weapons');
-const esthetics = require('../assets/clothes');
+const weapons = require('../assets/utils/Weapons');
+const esthetics = require('../assets/utils/Clothes');
 const util = require('util')
 const query = util.promisify(db.query).bind(db);
 
@@ -22,8 +22,8 @@ module.exports = class TestCommand extends BaseCommand {
     async run(client, message, args) {
         
         message.delete()
-        if (message.author.id !== "390212129392820224") return;
-
+        if(message.author.id !== "668301282838183946")return;
+        // if (message.author.id !== "390212129392820224" || "668301282838183946") return console.log(1);
         if(args[0] === "items" && args[1] === "reset") {
             await query(`DELETE FROM items`)
             new weapons().weaponsload()
@@ -36,6 +36,10 @@ module.exports = class TestCommand extends BaseCommand {
             await query(`DELETE FROM sorcier`)
             await query(`DELETE FROM user`)
             message.channel.send("All delete")
+        }
+        else if(args[0] === "house" && args[1] === "add") {
+            let [,,name, price, chest, id] = args;
+            await query(`INSERT INTO house (houseName, housePrice, houseChest, houseID) VALUES ('${name}', '${price}', '${chest}', '${id}')`)
         }
         else if(args[0] === "sorts" && args[1] === "add") {
             let [,,name, utilities, type] = args;
