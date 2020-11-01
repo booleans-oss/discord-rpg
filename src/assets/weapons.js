@@ -9,6 +9,7 @@ const db = createConnection({
 const query = util.promisify(db.query).bind(db);
 module.exports = class weaponsData {
     constructor() {}
+
     async ShieldDB(){
         // class Combattant
         await query(`INSERT items (items, lvl, damage) VALUES ('shield', '1', 'NULL')`)
