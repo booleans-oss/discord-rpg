@@ -30,7 +30,7 @@ module.exports = class RegisterCommand extends BaseCommand {
             return message.author.send(returnLogin)
         }
         
-        let filter = (user => !user.bot)
+        let filter = (user => !user.bot && user.author.id === message.author.id)
         try {
             await message.author.send(questionEmbed)
             let questionClass = (await message.channel.awaitMessages(filter, {
@@ -85,8 +85,9 @@ module.exports = class RegisterCommand extends BaseCommand {
             else if(questionClass === "Combattant") {
                 // bouclier, épée, armure
                 await db.query(`INSERT user (userID, class, sousClass, lvl, xp) VALUES ('${message.author.id}', '${questionClass}', 'NULL', '0', '0')`)
-                let object = {items: ["sword", "shield", "armor"]}
-                await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', '${object.items}')`)
+                let object = ["sword", "shield", "armor"]
+                await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', '${object}')`)
+                await db.query(`INSERT money (userID, money) VALUES ('${message.author.id}', '100')`)
                 new HealPoint().combattantLife(message.author.id);
                 message.author.send(Chooseclass)
                 textResult = `Vous avez choisi de devenir la classe ${questionClass}. Vous avez reçu **un bouclier**, **une épée** et une **magnifique armure**`
@@ -138,10 +139,10 @@ module.exports = class RegisterCommand extends BaseCommand {
                     sortDB = "INCENDIO"
                     sort = "Vous avez comme sort INCENDIO. Met en feu votre adversaire pendant 10s."
                 }
-                let object = {items: ["rod", "tunic", "sorcerer hat"]}
-                let textSorcier = `Le choixpeau à choisi la maison: **${maison}**.\n Vous avez obtenu une **baguette magique** de niveau 0, un **chapeau de sorcier** et la **sublime tunique ${colortunique}**`
+                let object = ["rod", "tunic", "sorcerer hat"]
+                let textSorcier = `Le choixpeau à choisi la maison: **${maison}**.\n Vous avez obtenu une **baguette magique** de niveau 0, un **chapeau de sorcier** et la **sublime tunique ${colortunique}**\n**${sort}**`
                 await db.query(`INSERT sorcier (userID, maison, sorts) VALUES ('${message.author.id}', '${maison}', '${sortDB}')`)
-                await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', '${object.items}')`)
+                await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', '${object}')`)
                 textResult = textSorcier
             }
             db.query(`INSERT hp (ID, HP) VALUES ('${message.author.id}', '100')`)

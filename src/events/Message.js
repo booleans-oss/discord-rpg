@@ -10,7 +10,8 @@ const db = mysql.createConnection({
     password: "",
     database: "rpg"
 });
-
+const util = require('util')
+const query = util.promisify(db.query).bind(db);
 module.exports = class MessageEvent extends EventBase {
     constructor() {
         super('message');
@@ -19,8 +20,8 @@ module.exports = class MessageEvent extends EventBase {
         if (message.author.bot) return;
 
         
-        let req = await db.query(`SELECT * FROM user WHERE userID = ${message.author.id}`)
-        if(req.length == 1) {
+        let user = await query(`SELECT * FROM user WHERE userID = '${message.author.id}'`)
+        if(user.length == 1) {
             new HealPoint().resetLife(message.author.id);
         }
 
