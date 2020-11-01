@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { execSync } = require('child_process')
+const color = require('chalk')
 const verif = async function () {
     let mandatory_modules = ["discord.js", "dotenv", "mysql"];
     await Promise.all(mandatory_modules.map(module => { isModuleInstalled(module)}))
@@ -12,8 +13,8 @@ function isModuleInstalled(name) {
     } catch(e){
         
     }
-    console.log(`\x1b[33m%s\x1b[0m`, `${name} n'a pas été installé. --- `, `\n\x1b[0m`, `npm i ${name}`)
-    console.log(`Installation de ${name} en cours`)
+    console.log(color.red(`${name} n'a pas été installé.`))
+    console.log(color.green(`Installation de ${name} en cours`))
     execSync(`npm i ${name}`, {
         cwd: `./`
       });
