@@ -22,8 +22,9 @@ module.exports = class TestCommand extends BaseCommand {
     async run(client, message, args) {
         
         message.delete()
-        if(message.author.id !== "668301282838183946")return;
-        // if (message.author.id !== "390212129392820224" || "668301282838183946") return console.log(1);
+        // if(message.author.id !== "668301282838183946")return;
+        if (message.author.id !== "390212129392820224") return;
+
         if(args[0] === "items" && args[1] === "reset") {
             await query(`DELETE FROM items`)
             new weapons().weaponsload()
@@ -40,6 +41,10 @@ module.exports = class TestCommand extends BaseCommand {
         else if(args[0] === "house" && args[1] === "add") {
             let [,,name, price, chest, id] = args;
             await query(`INSERT INTO house (houseName, housePrice, houseChest, houseID) VALUES ('${name}', '${price}', '${chest}', '${id}')`)
+        }
+        else if(args[0] === "items" && args[1] === "add"){
+            let [,,name, lvl, damage, weight] = args;
+            await query(`INSERT INTO items (items, lvl, damage, weight) VALUES ('${name}', '${lvl}', '${damage}', '${weight}')`)
         }
         else if(args[0] === "sorts" && args[1] === "add") {
             let [,,name, utilities, type] = args;
