@@ -67,10 +67,10 @@ module.exports = class TestCommand extends BaseCommand {
                arr[0].items[i]
             }
             */
-           if(!["Lasu", "Schindler"].includes(name)) return;
+            if (!["Lasu", "Schindler"].includes(name)) return;
             let index = property.findIndex(property => property.houseName === name);
             let embedNotAlreadyHouse = new MessageEmbed().setColor("FD0303").setDescription(`Vous n'avez pas la propriété ${name}`)
-            if(property[index].houseName !== name) return message.channel.send(embedNotAlreadyHouse)
+            if (property[index].houseName !== name) return message.channel.send(embedNotAlreadyHouse)
             let houseData = await query(`SELECT * FROM house WHERE houseName = '${name}'`)
             let stockage;
             for (let i = 0; i < property.length; i++) {
@@ -86,30 +86,119 @@ module.exports = class TestCommand extends BaseCommand {
             let msg = await message.channel.send(embedHouseData)
             await Promise.all(["📦"].map(r => msg.react(r)));
             let filter = ((reaction, user) => user.id === message.author.id && !user.bot)
-            let reaction = (await msg.awaitReactions(filter, {max: 1, time: 120000})).first()
-            if(reaction.emoji.name === "📦"){
+            let reaction = (await msg.awaitReactions(filter, {
+                max: 1,
+                time: 120000
+            })).first()
+
+            // All query
+            let req = await query(`SELECT * FROM stockagehouse WHERE userID = '${message.author.id}'`)                
+            let InventoryData = await query(`SELECT * FROM inventory WHERE ID = '${message.author.id}'`)
+            
+            // Filter awaitMessages
+            let Messagefilter = (msg => msg.author.id === message.author.id && !msg.author.bot)
+            if (reaction.emoji.name === "📦") {
                 reaction.remove()
+                
                 let inv;
-                let req = await query(`SELECT * FROM stockagehouse WHERE userID = '${message.author.id}'`)
-                for(let i = 0; i < req.length; i++) {
+                
+                for (let i = 0; i < req.length; i++) {
                     if (req[i].houseName === name) {
                         inv = req[i].houseItems
                     }
                 }
-                console.log(inv)
-                let embedMenuInventory = new MessageEmbed().setColor("10FE01").setDescription(`Maison/Votre coffre\n\nDans votre coffre vous avez actuellement: \`\`\`\n${inv === "[]" ? "Aucun objet":inv.slice(1, -1)}\`\`\`\n\n- Pour ajoutez un item faîtes 📥\n- Pour retirer un item faîtes 📤`)
+                let embedMenuInventory = new MessageEmbed().setColor("10FE01").setDescription(`Maison/Votre coffre\n\nDans votre coffre vous avez actuellement: \`\`\`\n${inv === "" ? "Aucun objet": inv.replace(",", "")}\`\`\`\n\n- Pour ajoutez un item faîtes 📥\n- Pour retirer un item faîtes 📤`)
                 msg.edit(embedMenuInventory)
                 await Promise.all(["📥", "📤"].map(r => msg.react(r)));
-                let reaction2 = (await msg.awaitReactions(filter, {max: 1, time: 120000})).first()
-                if(reaction2.emoji.name === "📥"){
+                let reaction2 = (await msg.awaitReactions(filter, {
+                    max: 1,
+                    time: 120000
+                })).first()
+                
+                if (reaction2.emoji.name === "📥") {
                     // Ajoutez un item dans l'inventaire
+                    // Vérifier si il est pas à la limite du coffre
                     
-                }
-                else {
-                    // Retirez un item de l'inventaire
-                    if(inv !== "[]") return;
+                    for (let i = 0; i < req.length; i++) {
+                        if (req[i].houseName !== name) return
+                        if (req[i].houseStockage >= houseData[i].houseChest) {
+                            let embedMenuLimit = new MessageEmbed().setColor("10FE01").setDescription(`Maison/Votre coffre\n\nDans votre coffre vous avez actuellement: \`\`\`\nVous n'avez plus de place dans votre coffre\`\`\`\n\n- Pour retirer un item faîtes 📤`)
+                            msg.edit(embedMenuLimit)
+                        } else {
+                            let AwaitMessagesEmbed = new MessageEmbed().setColor("10FE01").setDescription(`Quel item vous voulez ajoutez à votre coffre ?`);
+                            await message.channel.send(AwaitMessagesEmbed)
+                            let msg2 = (await message.channel.awaitMessages(Messagefilter, {
+                                max: 1
+                            })).first().content;
+                            let itemsData = await query(`SELECT * FROM items WHERE items = '${msg2}'`)
+                            if(itemsData.length < 1) {
+                                let embedItemsErrorData = new MessageEmbed().setColor("FD0303").setDescription(`L'item ${msg2} n'existe pas`)
+                                return message.channel.send(embedItemsErrorData)
+                            }
+                            let itemsDataArray = InventoryData[0].items.split(",")
+                            let embedItemsError = new MessageEmbed().setColor("FD0303").setDescription(`Vous n'avez pas l'item **${msg2}** dans votre inventaire. \n Voici votre inventaire \n\`\`\`\n${itemsDataArray}\`\`\``)
+                            if (!itemsDataArray.includes(msg2)) return message.channel.send(embedItemsError)
 
-                    
+                            
+                            let embedMaxStockage = new MessageEmbed().setColor("FD0303").setDescription(`L'item **${msg2}** est trop lourd pour être mis dans le coffre`)
+                            let restStockage = parseInt(req[i].houseStockage) + parseInt(houseData[i].houseChest)
+                            if (itemsData[0].weight > restStockage) return message.channel.send(embedMaxStockage)
+
+                            let oldItemsInventory = req[i].houseItems
+                            let newItemsInventory = `${oldItemsInventory},${msg2}`
+
+                            let oldItemsInvUser = InventoryData[i].items.split(",")
+                            let newItemsInvUser = oldItemsInvUser
+                            console.log(newItemsInvUser)
+                            newItemsInvUser.splice(newItemsInvUser.indexOf(msg2), 1)
+
+                            let oldItemsInventoryEmbed = req[i].houseItems.replace(",", "")
+                            // Update le poids du coffre
+                            await query(`UPDATE inventory SET items = '${newItemsInvUser}' WHERE ID = '${message.author.id}'`)
+                            await query(`UPDATE stockagehouse SET houseItems = '${newItemsInventory}' WHERE userID = '${message.author.id}'`)
+                            let embedNewInventory = new MessageEmbed().setColor("10FE01").setDescription(`Maison/Votre coffre\n\nDans votre coffre vous avez actuellement: \`\`\`diff\n+ ${msg2}\n${oldItemsInventoryEmbed}\`\`\``)
+                            return message.channel.send(embedNewInventory)
+                        }
+                    }
+                } 
+                if(reaction2.emoji.name === "📤") {
+                    // Retirez un item de l'inventaire
+
+                    // Vérifier si il a un item dans son coffre                    
+                    // Vérifier si l'item est bien dans le coffre
+
+                    // let itemsData = await query(`SELECT * FROM items WHERE items = '${msg2}'`)
+
+                    let embedNoItems = new MessageEmbed().setColor("FD0303").setDescription(`Vous n'avez pas d'item à retirer`)
+                    let embedQuestionDeleteItem = new MessageEmbed().setColor("10FE01").setDescription(`Quel item vous voulez retirer de votre coffre ?`)
+
+                    for (let i = 0; i < req.length; i++) {
+                        if (req[i].houseName !== name) return console.log(2)
+                        if (req[i].houseItems === "") {
+
+                            return message.channel.send(embedNoItems)
+                        }
+                        else {
+                            message.channel.send(embedQuestionDeleteItem)
+
+                            let responce = (await message.channel.awaitMessages(Messagefilter, {max: 1})).first().content;
+                            let itemsDataArray = req[i].houseItems.split(",")
+                            if (!itemsDataArray.includes(responce)) return message.channel.send(embedNoItems)
+
+                            let oldItemsInvUser = InventoryData[i].items
+                            let newItemsInvUser = `${oldItemsInvUser},${responce}`
+
+                            let oldItemsInventory = req[i].houseItems.split(",")
+                            let newItemsInventory = oldItemsInventory
+                            newItemsInventory.splice(newItemsInventory.indexOf(responce), 1)
+
+                            let oldItemsInvUserEmbed = InventoryData[i].items.replace(",", "")
+                            await query(`UPDATE stockagehouse SET houseItems = '${newItemsInventory}' WHERE userID = '${message.author.id}'`)
+                            await query(`UPDATE inventory SET items = '${newItemsInvUser}' WHERE ID = '${message.author.id}'`)
+                            let embedSucess = new MessageEmbed().setColor("10FE01").setDescription(`Voici votre inventaire\`\`\`diff\n+ ${responce}\n${oldItemsInvUserEmbed}\`\`\``)
+                            return message.channel.send(embedSucess)
+                        }
+                    }
                 }
             }
 
@@ -138,7 +227,7 @@ module.exports = class TestCommand extends BaseCommand {
                 })).first().content;
                 if (question === "oui") {
                     await query(`INSERT INTO property (userID, houseName) VALUES ('${message.author.id}', '${name}')`)
-                    await query(`INSERT INTO stockagehouse (userID, houseName, houseStockage, houseItems) VALUES ('${message.author.id}', '${name}', '0', '[]')`)
+                    await query(`INSERT INTO stockagehouse (userID, houseName, houseStockage, houseItems) VALUES ('${message.author.id}', '${name}', '0', '')`)
                     let embedSucess = new MessageEmbed().setColor("10FE01").setDescription(`Bravo, vous avez une nouvelle propriété. \n\nFaîtes .house enter <name>\nSi vous oubliez le nom de vos maison, faites .house mylist`)
                     return message.channel.send(embedSucess)
                 }
@@ -155,7 +244,7 @@ module.exports = class TestCommand extends BaseCommand {
             })).first().content;
             if (question === "oui") {
                 await query(`INSERT INTO property (userID, houseName) VALUES ('${message.author.id}', '${name}')`)
-                await query(`INSERT INTO stockagehouse (userID, houseName, houseStockage, houseItems) VALUES ('${message.author.id}', '${name}', '0', '[]')`)
+                await query(`INSERT INTO stockagehouse (userID, houseName, houseStockage, houseItems) VALUES ('${message.author.id}', '${name}', '0', '')`)
                 let embedSucess = new MessageEmbed().setColor("10FE01").setDescription(`Bravo, vous avez une nouvelle propriété. \n\nFaîtes .house enter <name>\nSi vous oubliez le nom de vos maison, faites .house mylist`)
                 message.channel.send(embedSucess)
             } else {
