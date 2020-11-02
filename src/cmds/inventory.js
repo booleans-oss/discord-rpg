@@ -37,7 +37,7 @@ module.exports = class TestCommand extends BaseCommand {
 
         let inventoryEmbed = new MessageEmbed()
         .setColor("10FE01")
-        .setDescription(`Voici votre inventaire\n\`\`\`\n${inventoryTable[0].items.split(",").join("\n")}\`\`\``)
+        .setDescription(`Voici votre inventaire\n\`\`\`\n${inventoryTable[0].items === "" ? "Aucun objet": inventoryTable[0].items.split(",").join("\n")}\`\`\``)
         message.channel.send(inventoryEmbed)
     }
 }
