@@ -18,17 +18,6 @@ module.exports = class TestCommand extends BaseCommand {
         super('inventory', 'divers', []);
     }
     async run(client, message, args) {
-            /*
-            userID;
-            houseName;
-            houseChest
-            items: [{pain: 2}, {viande: 10}]
-
-            let arr = []
-            for(let i = 0; i < arr[0].items.length; i++) {
-               arr[0].items[i]
-            }
-            */
         let requireUser = await query(`SELECT * FROM user WHERE userID = '${message.author.id}'`)
         if(requireUser.length < 1) return;
         
