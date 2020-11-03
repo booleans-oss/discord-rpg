@@ -3,7 +3,7 @@
 
   **Discord.js Bot Documentation Parser/Open Source Code**
 
-  [![Build Status](https://travis-ci.org/Redocly/redoc.svg?branch=master)](https://github.com/SUPRAZY-DEV/discord-rpg/) [![Coverage Status](https://coveralls.io/repos/Redocly/redoc/badge.svg?branch=master&service=github)](https://github.com/SUPRAZY-DEV/discord-rpg/) [![dependencies Status](https://david-dm.org/Redocly/redoc/status.svg)](https://github.com/SUPRAZY-DEV/discord-rpg/) [![devDependencies Status](https://david-dm.org/Redocly/redoc/dev-status.svg)](https://github.com/SUPRAZY-DEV/discord-rpg/) [![npm](http://img.shields.io/npm/v/redoc.svg)](https://www.npmjs.com/package/discord.js) [![License](https://img.shields.io/npm/l/redoc.svg)]()
+  [![Build Status](https://travis-ci.org/Redocly/redoc.svg?branch=master)](https://github.com/SUPRAZY-DEV/discord-rpg/) [![Coverage Status](https://coveralls.io/repos/Redocly/redoc/badge.svg?branch=master&service=github)](https://github.com/SUPRAZY-DEV/discord-rpg/) [![npm](http://img.shields.io/npm/v/redoc.svg)](https://www.npmjs.com/package/discord.js) [![License](https://img.shields.io/npm/l/redoc.svg)]()
 
 
 </div>
