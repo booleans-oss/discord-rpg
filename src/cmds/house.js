@@ -67,7 +67,8 @@ module.exports = class TestCommand extends BaseCommand {
                arr[0].items[i]
             }
             */
-            if (!["Lasu", "Schindler"].includes(name)) return;
+            let invalidName = new MessageEmbed().setColor("FD0303").setDescription(`La maison ${name} n'existe pas`) 
+            if (!["Lasu", "Schindler"].includes(name)) return message.channel.send(invalidName);
             let index = property.findIndex(property => property.houseName === name);
             let embedNotAlreadyHouse = new MessageEmbed().setColor("FD0303").setDescription(`Vous n'avez pas la propriété ${name}`)
             if (property[index].houseName !== name) return message.channel.send(embedNotAlreadyHouse)
@@ -82,9 +83,10 @@ module.exports = class TestCommand extends BaseCommand {
                     stockage = stockageData[i].houseStockage
                 }
             }
-            let embedHouseData = new MessageEmbed().setColor("10FE01").setDescription(`Bienvenu(e) dans votre maison ${name}\n\n Stockage utilisé ${stockage}/${houseData[0].houseChest}kg.`)
+            // Stockage utilisé ${stockage}/${houseData[0].houseChest}kg.
+            let embedHouseData = new MessageEmbed().setColor("10FE01").setDescription(`Bienvenu(e) dans votre maison ${name}\n\n Vous êtes dans le menu principal.\nPour accéder à votre coffre appuyez sur 📦\nPour accéder au information de votre maisons appuyez sur 📧`)
             let msg = await message.channel.send(embedHouseData)
-            await Promise.all(["📦"].map(r => msg.react(r)));
+            await Promise.all(["📦", "📧"].map(r => msg.react(r)));
             let filter = ((reaction, user) => user.id === message.author.id && !user.bot)
             let reaction = (await msg.awaitReactions(filter, {
                 max: 1,
@@ -200,6 +202,11 @@ module.exports = class TestCommand extends BaseCommand {
                         }
                     }
                 }
+            }
+            if(reaction.emoji.name === "📧"){
+                let embedHouseInfo = new MessageEmbed().setColor("10FE01").setDescription(`Informations supplémentaire.\n\nStockage utilisé **${stockage}**/**${houseData[0].houseChest}**kg\nNom de votre maison **${name}**\nPrix initial **${houseData[0].housePrice}**`)
+                msg.delete()
+                return message.channel.send(embedHouseInfo)
             }
 
         } else if (args[0] === "buy") {
