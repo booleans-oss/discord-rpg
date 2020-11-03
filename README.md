@@ -22,12 +22,7 @@
 - Adventure - 1h
 - Miniboss - 6h
 
-**Choose class**
-- Choose the class
-(if he choose villageois, the bot send a under-class)
-
 **Other idea**
-- System house
 - System xp
 - System lvl
 - System economic
@@ -49,6 +44,8 @@
   - [x] ~~Create a sortilieges~~
   - [x] ~~Create a weapons~~
   - [X] ~~Create a clothes~~
+  - [X] ~~Create a house system~~
+  - [X] ~~Create a chest system~~
   - [ ] Create a complex system fight
 
 ## Deployment 🌱
