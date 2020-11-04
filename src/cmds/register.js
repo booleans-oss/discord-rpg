@@ -55,25 +55,29 @@ module.exports = class RegisterCommand extends BaseCommand {
                 if(questionSousClass === "Forgerons"){
                     message.author.send(sousclassembed)
                     await db.query(`INSERT user (userID, class, sousClass, lvl, xp) VALUES ('${message.author.id}', '${questionClass}', '${questionSousClass}', '0', '0')`)
-                    textResult = "Pas encore fait"
+                    textResult = "Vous avez choisi de devenir la sous-classe Forgerons."
+                    await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', 'NULL')`)
                 }
                 // Sous-classe voyante
                 else if(questionSousClass === "Voyante"){
                     message.author.send(sousclassembed)
                     await db.query(`INSERT user (userID, class, sousClass, lvl, xp) VALUES ('${message.author.id}', '${questionClass}', '${questionSousClass}', '0', '0')`)
-                    textResult = "Pas encore fait"
+                    textResult = "Vous avez choisi de devenir la sous-classe Voyante."
+                    await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', 'NULL')`)
                 }
                 // Sous-classe agriculture
                 else if(questionSousClass === "Agriculture"){
                     message.author.send(sousclassembed)
                     await db.query(`INSERT user (userID, class, sousClass, lvl, xp) VALUES ('${message.author.id}', '${questionClass}', '${questionSousClass}', '0', '0')`)
-                    textResult = "Pas encore fait"
+                    textResult = "Vous avez choisi de devenir la sous-classe Agriculture."
+                    await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', 'NULL')`)
                 }
                 // Sous-classe Vendeur
                 else if(questionSousClass === "Vendeur"){
                     message.author.send(sousclassembed)
                     await db.query(`INSERT user (userID, class, sousClass, lvl, xp) VALUES ('${message.author.id}', '${questionClass}', '${questionSousClass}', '0', '0')`)
-                    textResult = "Pas encore fait"
+                    textResult = "Vous avez choisi de devenir la sous-classe Vendeur."
+                    await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', 'NULL')`)
                 }
                 // Classe non définit
                 else {
@@ -87,7 +91,6 @@ module.exports = class RegisterCommand extends BaseCommand {
                 await db.query(`INSERT user (userID, class, sousClass, lvl, xp) VALUES ('${message.author.id}', '${questionClass}', 'NULL', '0', '0')`)
                 let object = ["sword", "shield", "armor"]
                 await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', '${object}')`)
-                await db.query(`INSERT money (userID, money) VALUES ('${message.author.id}', '100')`)
                 new HealPoint().combattantLife(message.author.id);
                 message.author.send(Chooseclass)
                 textResult = `Vous avez choisi de devenir la classe ${questionClass}. Vous avez reçu **un bouclier**, **une épée** et une **magnifique armure**`
@@ -145,7 +148,8 @@ module.exports = class RegisterCommand extends BaseCommand {
                 await db.query(`INSERT inventory (ID, items) VALUES ('${message.author.id}', '${object}')`)
                 textResult = textSorcier
             }
-            db.query(`INSERT hp (ID, HP) VALUES ('${message.author.id}', '100')`)
+            await db.query(`INSERT hp (ID, HP) VALUES ('${message.author.id}', '100')`)
+            await db.query(`INSERT money (userID, money) VALUES ('${message.author.id}', '100')`)
             let result = new MessageEmbed().setColor("10FE01").setDescription(`${textResult}`)
             message.author.send(result)
         } catch (e) {
