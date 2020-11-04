@@ -13,7 +13,7 @@ const db = mysql.createConnection({
 const util = require('util');
 const query = util.promisify(db.query).bind(db);
 
-module.exports = class TestCommand extends BaseCommand {
+module.exports = class InventoryCommand extends BaseCommand {
     constructor() {
         super('inventory', 'divers', []);
     }

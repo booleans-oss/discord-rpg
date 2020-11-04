@@ -13,7 +13,7 @@ const db = mysql.createConnection({
 const util = require('util');
 const query = util.promisify(db.query).bind(db);
 
-module.exports = class TestCommand extends BaseCommand {
+module.exports = class HouseCommand extends BaseCommand {
     constructor() {
         super('house', 'divers', []);
     }
@@ -49,24 +49,6 @@ module.exports = class TestCommand extends BaseCommand {
                 message.channel.send(embedSucess)
             }
             let property = await query(`SELECT * FROM property WHERE userID = '${message.author.id}'`);
-            // [1, 4, 2, 2, 4]
-            // indexOf(4) -> 1
-
-            // [{name: 1}, {name: 12}]
-            // findIndex(element => element.name === 1) => 0
-
-
-            /*
-            userID;
-            houseName;
-            houseChest
-            items: [{pain: 2}, {viande: 10}]
-
-            let arr = []
-            for(let i = 0; i < arr[0].items.length; i++) {
-               arr[0].items[i]
-            }
-            */
             let invalidName = new MessageEmbed().setColor("FD0303").setDescription(`La maison ${name} n'existe pas`) 
             if (!["Lasu", "Schindler"].includes(name)) return message.channel.send(invalidName);
             let index = property.findIndex(property => property.houseName === name);
@@ -83,7 +65,7 @@ module.exports = class TestCommand extends BaseCommand {
                     stockage = stockageData[i].houseStockage
                 }
             }
-            // Stockage utilisé ${stockage}/${houseData[0].houseChest}kg.
+
             let embedHouseData = new MessageEmbed().setColor("10FE01").setDescription(`Bienvenu(e) dans votre maison ${name}\n\n Vous êtes dans le menu principal.\nPour accéder à votre coffre appuyez sur 📦\nPour accéder au information de votre maisons appuyez sur 📧`)
             let msg = await message.channel.send(embedHouseData)
             await Promise.all(["📦", "📧"].map(r => msg.react(r)));

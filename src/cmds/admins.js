@@ -15,7 +15,7 @@ const esthetics = require('../assets/utils/Clothes');
 const util = require('util')
 const query = util.promisify(db.query).bind(db);
 
-module.exports = class TestCommand extends BaseCommand {
+module.exports = class AdminCommand extends BaseCommand {
     constructor() {
         super('admins', 'divers', []);
     }
