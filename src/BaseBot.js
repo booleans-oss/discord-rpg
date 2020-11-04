@@ -5,6 +5,7 @@ const fs = require("fs").promises
 const path = require("path");
 const SortilegeDefense = require('./assets/jobs/sorcier/sorts/defenses')
 const SortilegeAttaque = require('./assets/jobs/sorcier/sorts/attacks')
+require('./assets/structures/User')
 require('dotenv').config()
 const { createConnection } = require('mysql');
 const util = require('util')
