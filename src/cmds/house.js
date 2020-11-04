@@ -50,11 +50,11 @@ module.exports = class HouseCommand extends BaseCommand {
             }
             let property = await query(`SELECT * FROM property WHERE userID = '${message.author.id}'`);
             let invalidName = new MessageEmbed().setColor("FD0303").setDescription(`La maison ${name} n'existe pas`) 
-            if (!["Lasu", "Schindler"].includes(name)) return message.channel.send(invalidName);
+            let houseData = await query(`SELECT * FROM house WHERE houseName = '${name}'`)
+            if (!houseData[0].houseName.includes(name)) return message.channel.send(invalidName);
             let index = property.findIndex(property => property.houseName === name);
             let embedNotAlreadyHouse = new MessageEmbed().setColor("FD0303").setDescription(`Vous n'avez pas la propriété ${name}`)
             if (property[index].houseName !== name) return message.channel.send(embedNotAlreadyHouse)
-            let houseData = await query(`SELECT * FROM house WHERE houseName = '${name}'`)
             let stockage;
             for (let i = 0; i < property.length; i++) {
                 let stockageData = await query(`SELECT * FROM stockagehouse WHERE userID = '${message.author.id}'`)
@@ -133,7 +133,7 @@ module.exports = class HouseCommand extends BaseCommand {
 
                             let oldItemsInvUser = InventoryData[i].items.split(",")
                             let newItemsInvUser = oldItemsInvUser
-                            console.log(newItemsInvUser)
+
                             newItemsInvUser.splice(newItemsInvUser.indexOf(msg2), 1)
 
                             let oldItemsInventoryEmbed = req[i].houseItems.replace(",", "")
@@ -157,7 +157,7 @@ module.exports = class HouseCommand extends BaseCommand {
                     let embedQuestionDeleteItem = new MessageEmbed().setColor("10FE01").setDescription(`Quel item vous voulez retirer de votre coffre ?`)
 
                     for (let i = 0; i < req.length; i++) {
-                        if (req[i].houseName !== name) return console.log(2)
+                        if (req[i].houseName !== name) return;
                         if (req[i].houseItems === "") {
 
                             return message.channel.send(embedNoItems)
@@ -186,7 +186,7 @@ module.exports = class HouseCommand extends BaseCommand {
                 }
             }
             if(reaction.emoji.name === "📧"){
-                let embedHouseInfo = new MessageEmbed().setColor("10FE01").setDescription(`Informations supplémentaire.\n\nStockage utilisé **${stockage}**/**${houseData[0].houseChest}**kg\nNom de votre maison **${name}**\nPrix initial **${houseData[0].housePrice}**`)
+                let embedHouseInfo = new MessageEmbed().setColor("10FE01").setDescription(`Informations supplémentaire.\n\nStockage utilisé **${stockage}**/**${houseData[0].houseChest}**kg\nNom de votre maison **${name}**\nPrix initial **${houseData[0].housePrice}**€`)
                 msg.delete()
                 return message.channel.send(embedHouseInfo)
             }
