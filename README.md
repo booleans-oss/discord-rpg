@@ -14,6 +14,9 @@
 
 [<img alt="Deploy to Github" src="http://i.imgur.com/YZmaqk3.png" height="60px">](https://github.com/SUPRAZY-DEV/discord-rpg/) [<img alt="Customization services" src="http://i.imgur.com/c4sUF7M.png" height="60px">](https://github.com/SUPRAZY-DEV/discord-rpg/)
 
+### We restart the code with live on my server discord.
+
+
 ## IDEA 🛠
 
 **Activity Timing**
